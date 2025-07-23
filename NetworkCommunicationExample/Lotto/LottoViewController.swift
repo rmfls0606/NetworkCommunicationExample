@@ -111,6 +111,11 @@ class LottoViewController: UIViewController {
         
         return container
     }
+    
+    @objc
+    private func dismissKeyboard(){
+        view.endEditing(true)
+    }
 }
 
 extension LottoViewController: ViewDesignProtocol{
@@ -164,6 +169,10 @@ extension LottoViewController: ViewDesignProtocol{
         navigationItem.title = "Lotto"
         
         view.backgroundColor = .white
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
         
         lottoRoundTextField.inputView = lottoRoundPickerView
         lottoRoundTextField.delegate = self
