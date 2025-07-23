@@ -10,18 +10,24 @@ import SnapKit
 
 class LottoViewController: UIViewController {
     
-    var winningLottoNumber: (winningNum: [Int], bonusNum: Int) {
+    private var winningLottoNumber: (winningNum: [Int], bonusNum: Int) {
         let randomLottoNumber = [Int](1...45).shuffled()
         let winningNumber = Array(randomLottoNumber[0...5])
         let bonusNumber = randomLottoNumber[6]
         return (winningNum: winningNumber, bonusNum: bonusNumber)
     }
     
+    private let lottoRound: [Int] = [Int](1...1181)
+    
     private let lottoRoundTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .roundedRect
+        textField.textAlignment = .center
+        textField.tintColor = .clear
         return textField
     }()
+    
+    private let lottoRoundPickerView =   UIPickerView()
     
     private let winningNumberTitleLabel: UILabel = {
         let label = UILabel()
@@ -159,6 +165,10 @@ extension LottoViewController: ViewDesignProtocol{
         
         view.backgroundColor = .white
         
+        lottoRoundTextField.inputView = lottoRoundPickerView
+        lottoRoundPickerView.delegate = self
+        lottoRoundPickerView.dataSource = self
+        
         winningLottoNumber.winningNum.forEach { num in
             let ball = LottoBallView(ballNumber: num)
             lottoBallStackView.addArrangedSubview(ball)
@@ -170,5 +180,19 @@ extension LottoViewController: ViewDesignProtocol{
             .addArrangedSubview(
                 makeBonusBallView(number: winningLottoNumber.bonusNum)
             )
+    }
+}
+
+extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return self.lottoRound.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return "\(self.lottoRound[row])회"
     }
 }
