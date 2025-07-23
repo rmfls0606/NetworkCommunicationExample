@@ -236,8 +236,13 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
 
 extension LottoViewController: UITextFieldDelegate{
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        guard let text = textField.text, !text.isEmpty || lottoRound.isEmpty else {
-            textField.text = "\(self.lottoRound[0])회"
+        guard let text = textField.text, !text.isEmpty else {
+            if let recentRound = lottoRound.last{
+                let lottoRoundText = "\(recentRound)회"
+                textField.text = lottoRoundText
+                self.winningResultLabel.text = lottoRoundText + " 당첨결과"
+                self.winningResultLabel.asColor(targetString: lottoRoundText)
+            }
             return
         }
     }
