@@ -11,7 +11,6 @@ import SnapKit
 class LottoBallView: UIView {
 
     var ballNumber: Int
-    var isBounds: Bool
     
     private let numberLabel: UILabel = {
         let label = UILabel()
@@ -30,9 +29,8 @@ class LottoBallView: UIView {
         return label
     }()
 
-    init(ballNumber: Int, isBounds: Bool){
+    init(ballNumber: Int){
         self.ballNumber = ballNumber
-        self.isBounds = isBounds
         super.init(frame: .zero)
         
         configureHierarchy()
@@ -54,10 +52,6 @@ class LottoBallView: UIView {
 extension LottoBallView: ViewDesignProtocol{
     func configureHierarchy() {
         addSubview(numberLabel)
-        
-        if isBounds{
-            addSubview(boundsTextLabel)
-        }
     }
 
     func configureLayout() {
@@ -68,21 +62,11 @@ extension LottoBallView: ViewDesignProtocol{
         numberLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-        
-        if isBounds{
-            boundsTextLabel.snp.makeConstraints { make in
-                make.top.equalTo(self.snp.bottom).offset(5)
-            }
-        }
     }
     
     func configureView() {
         backgroundColor = .systemGray4
         
         numberLabel.text = "\(ballNumber)"
-        
-        if isBounds{
-            boundsTextLabel.text = "보너스"
-        }
     }
 }

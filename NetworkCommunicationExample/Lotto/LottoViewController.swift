@@ -78,6 +78,33 @@ class LottoViewController: UIViewController {
         configureLayout()
         configureView()
     }
+    
+    private func makeBonusBallView(number: Int) -> UIView{
+        let container = UIView()
+        
+        let bonusBall = LottoBallView(ballNumber: number)
+        
+        let bonusBallTextLabel = UILabel()
+        bonusBallTextLabel.text = "보너스"
+        bonusBallTextLabel.textColor = .systemGray
+        bonusBallTextLabel.font = .systemFont(ofSize: 12)
+        bonusBallTextLabel.textAlignment = .center
+        
+        container.addSubview(bonusBall)
+        container.addSubview(bonusBallTextLabel)
+        
+        bonusBall.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(bonusBall.snp.width)
+        }
+        
+        bonusBallTextLabel.snp.makeConstraints { make in
+            make.top.equalTo(bonusBall.snp.bottom).offset(5)
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        return container
+    }
 }
 
 extension LottoViewController: ViewDesignProtocol{
@@ -133,7 +160,7 @@ extension LottoViewController: ViewDesignProtocol{
         view.backgroundColor = .white
         
         winningLottoNumber.winningNum.forEach { num in
-            let ball = LottoBallView(ballNumber: num, isBounds: false)
+            let ball = LottoBallView(ballNumber: num)
             lottoBallStackView.addArrangedSubview(ball)
         }
         
@@ -141,10 +168,7 @@ extension LottoViewController: ViewDesignProtocol{
         
         lottoBallStackView
             .addArrangedSubview(
-                LottoBallView(
-                    ballNumber: winningLottoNumber.bonusNum,
-                    isBounds: true
-                )
+                makeBonusBallView(number: winningLottoNumber.bonusNum)
             )
     }
 }
