@@ -166,6 +166,8 @@ extension LottoViewController: ViewDesignProtocol{
         view.backgroundColor = .white
         
         lottoRoundTextField.inputView = lottoRoundPickerView
+        lottoRoundTextField.delegate = self
+        
         lottoRoundPickerView.delegate = self
         lottoRoundPickerView.dataSource = self
         
@@ -185,11 +187,11 @@ extension LottoViewController: ViewDesignProtocol{
 
 extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
+        return self.lottoRound.isEmpty ? 0 : 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return self.lottoRound.count
+        return self.lottoRound.isEmpty ? 0 : self.lottoRound.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
@@ -198,5 +200,14 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         self.lottoRoundTextField.text = "\(self.lottoRound[row])회"
+    }
+}
+
+extension LottoViewController: UITextFieldDelegate{
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        guard let text = textField.text, !text.isEmpty || lottoRound.isEmpty else {
+            textField.text = "\(self.lottoRound[0])회"
+            return
+        }
     }
 }
