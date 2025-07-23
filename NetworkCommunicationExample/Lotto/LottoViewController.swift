@@ -18,6 +18,8 @@ class LottoViewController: UIViewController {
     }
     
     private let lottoRound: [Int] = [Int](1...1181)
+    private var lottoBallViews: [LottoBallView] = []
+    private var bonusBallView: LottoBallView?
     
     private let lottoRoundTextField: UITextField = {
         let textField = UITextField()
@@ -88,7 +90,8 @@ class LottoViewController: UIViewController {
     private func makeBonusBallView(number: Int) -> UIView{
         let container = UIView()
         
-        let bonusBall = LottoBallView(ballNumber: number)
+        let bonusBall = LottoBallView()
+        bonusBall.configure(ballNumber: number)
         
         let bonusBallTextLabel = UILabel()
         bonusBallTextLabel.text = "보너스"
@@ -108,6 +111,8 @@ class LottoViewController: UIViewController {
             make.top.equalTo(bonusBall.snp.bottom).offset(5)
             make.leading.trailing.equalToSuperview()
         }
+        
+        bonusBallView = bonusBall
         
         return container
     }
@@ -180,17 +185,30 @@ extension LottoViewController: ViewDesignProtocol{
         lottoRoundPickerView.delegate = self
         lottoRoundPickerView.dataSource = self
         
-        winningLottoNumber.winningNum.forEach { num in
-            let ball = LottoBallView(ballNumber: num)
+        let currentLottoData = winningLottoNumber
+        
+        for _ in 0..<currentLottoData.winningNum.count{
+            let ball = LottoBallView()
             lottoBallStackView.addArrangedSubview(ball)
+            lottoBallViews.append(ball)
         }
         
         lottoBallStackView.addArrangedSubview(plusLabel)
         
-        lottoBallStackView
-            .addArrangedSubview(
+        lottoBallStackView.addArrangedSubview(
                 makeBonusBallView(number: winningLottoNumber.bonusNum)
             )
+        
+        updateLottoBalls()
+    }
+    
+    private func updateLottoBalls(){
+        let lotto = winningLottoNumber
+        
+        for (i, num) in lotto.winningNum.enumerated(){
+            lottoBallViews[i].configure(ballNumber: num)
+        }
+        bonusBallView?.configure(ballNumber: lotto.bonusNum)
     }
 }
 
@@ -208,6 +226,7 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        updateLottoBalls()
         self.lottoRoundTextField.text = "\(self.lottoRound[row])회"
     }
 }

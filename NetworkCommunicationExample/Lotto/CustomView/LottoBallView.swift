@@ -23,8 +23,6 @@ enum LottoColor{
 }
 
 class LottoBallView: UIView {
-
-    var ballNumber: Int
     
     private let numberLabel: UILabel = {
         let label = UILabel()
@@ -43,9 +41,8 @@ class LottoBallView: UIView {
         return label
     }()
 
-    init(ballNumber: Int){
-        self.ballNumber = ballNumber
-        super.init(frame: .zero)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         
         configureHierarchy()
         configureLayout()
@@ -60,6 +57,11 @@ class LottoBallView: UIView {
         super.layoutSubviews()
         self.layer.cornerRadius = self.bounds.width / 2
         self.clipsToBounds = true
+    }
+    
+    func configure(ballNumber: Int) {
+        backgroundColor = LottoColor.colorSet(ballNumber: ballNumber)
+        numberLabel.text = "\(ballNumber)"
     }
 }
 
@@ -79,9 +81,6 @@ extension LottoBallView: ViewDesignProtocol{
     }
     
     func configureView() {
-        backgroundColor = LottoColor.colorSet(ballNumber: ballNumber)
         layer.opacity = 0.5
-        
-        numberLabel.text = "\(ballNumber)"
     }
 }
