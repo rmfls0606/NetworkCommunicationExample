@@ -28,6 +28,12 @@ class ViewController: UIViewController {
         configureLayout()
         configureView()
     }
+    
+    @objc
+    private func lottoMoveButtonClicked(_ sender: UIButton){
+        let viewController = LottoViewController()
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 extension ViewController: ViewDesignProtocol{
@@ -44,5 +50,7 @@ extension ViewController: ViewDesignProtocol{
     
     func configureView() {
         view.backgroundColor = .white
+        
+        lottoMoveButton.addTarget(self, action: #selector(lottoMoveButtonClicked), for: .touchUpInside)
     }
 }
