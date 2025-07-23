@@ -54,7 +54,7 @@ class LottoViewController: UIViewController {
     
     private let winningResultLabel: UILabel = {
         let label = UILabel()
-        label.text = "913회 당첨결과"
+        label.text = "로또 당첨결과"
         label.textColor = .black
         label.font = .systemFont(ofSize: 20)
         label.textAlignment = .center
@@ -227,8 +227,10 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         updateLottoBalls()
-        self.lottoRoundTextField.text = "\(self.lottoRound[row])회"
-        self.winningResultLabel.text = "\(self.lottoRound[row])회 당첨결과"
+        let lottoRoundText = "\(self.lottoRound[row])회"
+        self.lottoRoundTextField.text = lottoRoundText
+        self.winningResultLabel.text = lottoRoundText + " 당첨결과"
+        self.winningResultLabel.asColor(targetString: lottoRoundText)
     }
 }
 
