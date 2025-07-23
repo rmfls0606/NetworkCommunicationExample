@@ -8,6 +8,20 @@
 import UIKit
 import SnapKit
 
+enum LottoColor{
+    case orange, blue, red, gray, green
+    
+    static func colorSet(ballNumber: Int) -> UIColor{
+        switch ballNumber {
+        case 1...10: return .orange
+        case 11...20: return .blue
+        case 21...30: return .red
+        case 31...40: return .gray
+        default : return .green
+        }
+    }
+}
+
 class LottoBallView: UIView {
 
     var ballNumber: Int
@@ -65,7 +79,8 @@ extension LottoBallView: ViewDesignProtocol{
     }
     
     func configureView() {
-        backgroundColor = .systemGray4
+        backgroundColor = LottoColor.colorSet(ballNumber: ballNumber)
+        layer.opacity = 0.5
         
         numberLabel.text = "\(ballNumber)"
     }
