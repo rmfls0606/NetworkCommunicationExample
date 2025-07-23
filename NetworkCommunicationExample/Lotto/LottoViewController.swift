@@ -228,6 +228,7 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         updateLottoBalls()
         self.lottoRoundTextField.text = "\(self.lottoRound[row])회"
+        self.winningResultLabel.text = "\(self.lottoRound[row])회 당첨결과"
     }
 }
 
