@@ -195,4 +195,8 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return "\(self.lottoRound[row])회"
     }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.lottoRoundTextField.text = "\(self.lottoRound[row])회"
+    }
 }
