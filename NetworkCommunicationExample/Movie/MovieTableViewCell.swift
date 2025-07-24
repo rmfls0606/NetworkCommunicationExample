@@ -64,12 +64,12 @@ class MovieTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureData(rank: Int, movie: Movie){
-        rankLabel.text = rank.description
+    func configureData(rank: Int, movie: BoxOffice){
+        rankLabel.text = movie.rank
         
-        movieTitle.text = movie.title
+        movieTitle.text = movie.movieNm
         
-        movieDate.text = movie.releaseDate
+        movieDate.text = movie.openDt
     }
 }
 

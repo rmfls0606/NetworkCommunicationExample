@@ -11,7 +11,7 @@ import Alamofire
 
 class MovieViewController: UIViewController {
 
-    private var randomMovieList: [Movie] = Array(MovieInfo.movies.shuffled().prefix(10))
+    private var movieList: [BoxOffice] = []
     
     private let movieSearchTextField: UITextField = {
         let textField = UITextField()
@@ -68,7 +68,8 @@ class MovieViewController: UIViewController {
             .responseDecodable(of: BoxOfficeResult.self) { response in
                 switch response.result {
                 case .success(let value):
-                    dump(value)
+                    self.movieList = value.boxOfficeResult.dailyBoxOfficeList
+                    self.movieTableView.reloadData()
                 case .failure(let error):
                     print(error)
                 }
@@ -76,9 +77,21 @@ class MovieViewController: UIViewController {
     }
     
     @objc
-    private func makeRandomMovieList(){
-        randomMovieList = Array(MovieInfo.movies.shuffled().prefix(10))
-        movieTableView.reloadData()
+    private func searchTextFieldReturnClicked(_ sender: UITextField){
+        guard let text = sender.text, !text.isEmpty else {
+            return
+        }
+        
+        callRequest(date: text)
+    }
+    
+    @objc
+    private func searchButtonClicked(_ sender: UIButton){
+        guard let text = movieSearchTextField.text, !text.isEmpty else {
+            return
+        }
+        
+        callRequest(date: text)
     }
 }
 
@@ -134,9 +147,9 @@ extension MovieViewController: ViewDesignProtocol{
         
         view.backgroundColor = .black
         
-        movieSearchTextField.addTarget(self, action: #selector(makeRandomMovieList), for: .editingDidEndOnExit)
+        movieSearchTextField.addTarget(self, action: #selector(searchTextFieldReturnClicked), for: .editingDidEndOnExit)
         
-        movieSearchButton.addTarget(self, action: #selector(makeRandomMovieList), for: .touchUpInside)
+        movieSearchButton.addTarget(self, action: #selector(searchButtonClicked), for: .touchUpInside)
         
         movieTableView
             .register(
@@ -152,7 +165,7 @@ extension MovieViewController: ViewDesignProtocol{
 
 extension MovieViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return randomMovieList.count
+        return movieList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -163,7 +176,7 @@ extension MovieViewController: UITableViewDelegate, UITableViewDataSource{
             return UITableViewCell()
         }
         
-        cell.configureData(rank: indexPath.row + 1, movie: randomMovieList[indexPath.row])
+        cell.configureData(rank: indexPath.row + 1, movie: movieList[indexPath.row])
         return cell
     }
 }
