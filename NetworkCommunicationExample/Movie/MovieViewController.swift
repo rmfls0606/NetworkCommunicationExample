@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Alamofire
 
 class MovieViewController: UIViewController {
 
@@ -57,6 +58,21 @@ class MovieViewController: UIViewController {
         configureHierarchy()
         configureView()
         configureLayout()
+    }
+    
+    private func callRequest(date: String){
+        let url = "https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=\(ApiKey.boxofficApiKey)&targetDt=\(date)"
+        
+        AF.request(url, method: .get)
+            .validate(statusCode: 200..<300)
+            .responseDecodable(of: BoxOfficeResult.self) { response in
+                switch response.result {
+                case .success(let value):
+                    dump(value)
+                case .failure(let error):
+                    print(error)
+                }
+            }
     }
     
     @objc
