@@ -28,6 +28,12 @@ class ViewController: UIViewController {
         navigationController?.pushViewController(viewController, animated: true)
     }
     
+    @objc
+    private func movieMoveButtonClicked(_ sender: UIButton){
+        let viewController = MovieViewController()
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     private static func configureMoveButton(text: String) -> UIButton{
         let button = UIButton()
         button.setTitle(text, for: .normal)
@@ -62,5 +68,7 @@ extension ViewController: ViewDesignProtocol{
         view.backgroundColor = .white
         
         lottoMoveButton.addTarget(self, action: #selector(lottoMoveButtonClicked), for: .touchUpInside)
+        
+        movieMoveButton.addTarget(self, action: #selector(movieMoveButtonClicked), for: .touchUpInside)
     }
 }
