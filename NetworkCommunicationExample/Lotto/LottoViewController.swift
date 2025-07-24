@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Alamofire
 
 class LottoViewController: UIViewController {
     
@@ -121,6 +122,21 @@ class LottoViewController: UIViewController {
     private func dismissKeyboard(){
         view.endEditing(true)
     }
+    
+    private func callRequest(round: String){
+        let url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(round)"
+        
+        AF.request(url, method: .get)
+            .validate(statusCode: 200..<300)
+            .responseDecodable(of: Lotto.self) { response in
+                switch response.result{
+                case .success(let lotto):
+                    print(lotto)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+    }
 }
 
 extension LottoViewController: ViewDesignProtocol{
@@ -174,6 +190,8 @@ extension LottoViewController: ViewDesignProtocol{
         navigationItem.title = "Lotto"
         
         view.backgroundColor = .white
+        
+        callRequest(round: "1181")
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
