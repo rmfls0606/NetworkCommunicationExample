@@ -11,12 +11,7 @@ import Alamofire
 
 class LottoViewController: UIViewController {
     
-    private var winningLottoNumber: (winningNum: [Int], bonusNum: Int) {
-        let randomLottoNumber = [Int](1...45).shuffled()
-        let winningNumber = Array(randomLottoNumber[0...5])
-        let bonusNumber = randomLottoNumber[6]
-        return (winningNum: winningNumber, bonusNum: bonusNumber)
-    }
+    private var lottoData: Lotto?
     
     private let lottoRound: [Int] = [Int](1...1181)
     private var lottoBallViews: [LottoBallView] = []
@@ -123,6 +118,42 @@ class LottoViewController: UIViewController {
         view.endEditing(true)
     }
     
+    private func setupBallViews(){
+        guard lottoBallViews.isEmpty else { return }
+        
+        for _ in 0..<6{
+            let ball = LottoBallView()
+            lottoBallStackView.addArrangedSubview(ball)
+            lottoBallViews.append(ball)
+        }
+        
+        lottoBallStackView.addArrangedSubview(plusLabel)
+        
+        lottoBallStackView.addArrangedSubview(
+            makeBonusBallView(number: 0)
+        )
+    }
+    
+    private func updateLottoBalls(round: String){
+        guard let lottoData = lottoData else { return }
+        
+        let winLottoData = [
+            lottoData.drwtNo1, lottoData.drwtNo2, lottoData.drwtNo3,
+            lottoData.drwtNo4, lottoData.drwtNo5, lottoData.drwtNo6
+        ]
+        
+        for (i, num) in winLottoData.enumerated(){
+            lottoBallViews[i].configure(ballNumber: num)
+        }
+        bonusBallView?.configure(ballNumber: lottoData.bnusNo)
+        drawDateLabel.text = "\(lottoData.drwNoDate) 추첨"
+        
+        let lottoRoundText = round + "회"
+        lottoRoundTextField.text = lottoRoundText
+        winningResultLabel.text = lottoRoundText + " 당첨결과"
+        winningResultLabel.asColor(targetString: lottoRoundText)
+    }
+    
     private func callRequest(round: String){
         let url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(round)"
         
@@ -131,7 +162,9 @@ class LottoViewController: UIViewController {
             .responseDecodable(of: Lotto.self) { response in
                 switch response.result{
                 case .success(let lotto):
-                    print(lotto)
+                    self.lottoData = lotto
+                    self.setupBallViews()
+                    self.updateLottoBalls(round: round)
                 case .failure(let error):
                     print(error.localizedDescription)
                 }
@@ -191,42 +224,17 @@ extension LottoViewController: ViewDesignProtocol{
         
         view.backgroundColor = .white
         
-        callRequest(round: "1181")
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
         
         lottoRoundTextField.inputView = lottoRoundPickerView
-        lottoRoundTextField.delegate = self
         
         lottoRoundPickerView.delegate = self
         lottoRoundPickerView.dataSource = self
         
-        let currentLottoData = winningLottoNumber
-        
-        for _ in 0..<currentLottoData.winningNum.count{
-            let ball = LottoBallView()
-            lottoBallStackView.addArrangedSubview(ball)
-            lottoBallViews.append(ball)
-        }
-        
-        lottoBallStackView.addArrangedSubview(plusLabel)
-        
-        lottoBallStackView.addArrangedSubview(
-                makeBonusBallView(number: winningLottoNumber.bonusNum)
-            )
-        
-        updateLottoBalls()
-    }
-    
-    private func updateLottoBalls(){
-        let lotto = winningLottoNumber
-        
-        for (i, num) in lotto.winningNum.enumerated(){
-            lottoBallViews[i].configure(ballNumber: num)
-        }
-        bonusBallView?.configure(ballNumber: lotto.bonusNum)
+        lottoRoundPickerView.selectRow(lottoRound.count - 1, inComponent: 0, animated: false)
+        callRequest(round: "\(lottoRound.count)")
     }
 }
 
@@ -244,24 +252,6 @@ extension LottoViewController: UIPickerViewDelegate, UIPickerViewDataSource{
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        updateLottoBalls()
-        let lottoRoundText = "\(self.lottoRound[row])회"
-        self.lottoRoundTextField.text = lottoRoundText
-        self.winningResultLabel.text = lottoRoundText + " 당첨결과"
-        self.winningResultLabel.asColor(targetString: lottoRoundText)
-    }
-}
-
-extension LottoViewController: UITextFieldDelegate{
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        guard let text = textField.text, !text.isEmpty else {
-            if let recentRound = lottoRound.last{
-                let lottoRoundText = "\(recentRound)회"
-                textField.text = lottoRoundText
-                self.winningResultLabel.text = lottoRoundText + " 당첨결과"
-                self.winningResultLabel.asColor(targetString: lottoRoundText)
-            }
-            return
-        }
+        callRequest(round: "\(lottoRound[row])")
     }
 }
