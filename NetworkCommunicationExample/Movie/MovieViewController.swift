@@ -19,6 +19,7 @@ class MovieViewController: UIViewController {
         textField.textColor = .systemGray3
         textField.layer.borderWidth = 1.0
         textField.layer.borderColor = UIColor.systemGray3.cgColor
+        textField.attributedPlaceholder = NSAttributedString(string: "예: 20250725", attributes: [.foregroundColor: UIColor.systemGray3])
         return textField
     }()
     
