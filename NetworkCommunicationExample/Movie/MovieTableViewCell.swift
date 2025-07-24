@@ -92,9 +92,12 @@ extension MovieTableViewCell: ViewDesignProtocol{
             make.horizontalEdges.equalToSuperview().inset(16)
         }
         
+        rankView.snp.makeConstraints { make in
+            make.width.equalTo(container.snp.height).multipliedBy(2)
+        }
+        
         rankLabel.snp.makeConstraints { make in
-            make.horizontalEdges.equalToSuperview().inset(16)
-            make.verticalEdges.equalToSuperview().inset(4)
+            make.center.equalToSuperview()
         }
         
         rankLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
