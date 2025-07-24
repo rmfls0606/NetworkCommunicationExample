@@ -58,6 +58,12 @@ class MovieViewController: UIViewController {
         configureView()
         configureLayout()
     }
+    
+    @objc
+    private func makeRandomMovieList(){
+        randomMovieList = Array(MovieInfo.movies.shuffled().prefix(10))
+        movieTableView.reloadData()
+    }
 }
 
 extension MovieViewController: ViewDesignProtocol{
@@ -111,6 +117,10 @@ extension MovieViewController: ViewDesignProtocol{
         navigationItem.title = "Movie"
         
         view.backgroundColor = .black
+        
+        movieSearchTextField.addTarget(self, action: #selector(makeRandomMovieList), for: .editingDidEndOnExit)
+        
+        movieSearchButton.addTarget(self, action: #selector(makeRandomMovieList), for: .touchUpInside)
         
         movieTableView
             .register(
