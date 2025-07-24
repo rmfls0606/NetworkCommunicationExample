@@ -63,6 +63,14 @@ class MovieTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configureData(rank: Int, movie: Movie){
+        rankLabel.text = rank.description
+        
+        movieTitle.text = movie.title
+        
+        movieDate.text = movie.releaseDate
+    }
 }
 
 extension MovieTableViewCell: ViewDesignProtocol{
