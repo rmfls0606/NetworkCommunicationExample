@@ -77,6 +77,14 @@ class MovieViewController: UIViewController {
             }
     }
     
+    private func makeYesterdayString() -> String{
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: Date())!
+        let dateForamatter = DateFormatter()
+        dateForamatter.dateFormat = "yyyyMMdd"
+        return dateForamatter.string(from: yesterday)
+    }
+    
     @objc
     private func searchTextFieldReturnClicked(_ sender: UITextField){
         guard let text = sender.text, !text.isEmpty else {
@@ -161,6 +169,10 @@ extension MovieViewController: ViewDesignProtocol{
         movieTableView.dataSource = self
         movieTableView.separatorStyle = .none
         movieTableView.backgroundColor = .black
+        
+        let yesterday = makeYesterdayString()
+        movieSearchTextField.text = yesterday
+        callRequest(date: yesterday)
     }
 }
 
