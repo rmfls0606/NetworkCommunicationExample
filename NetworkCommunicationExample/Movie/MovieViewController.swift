@@ -38,7 +38,7 @@ class MovieViewController: UIViewController {
         return button
     }()
     
-    private let movieTableVie: UITableView = {
+    private let movieTableView: UITableView = {
         let tableView = UITableView()
         return tableView
     }()
@@ -65,7 +65,7 @@ extension MovieViewController: ViewDesignProtocol{
         movieSearchView.addSubview(movieSearchTextField)
         movieSearchView.addSubview(movieSearchButton)
         
-        view.addSubview(movieTableVie)
+        view.addSubview(movieTableView)
     }
 
     func configureLayout() {
@@ -99,7 +99,7 @@ extension MovieViewController: ViewDesignProtocol{
                 for: .horizontal
             )
         
-        movieTableVie.snp.makeConstraints { make in
+        movieTableView.snp.makeConstraints { make in
             make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             make.top.equalTo(movieSearchView.snp.bottom).offset(8)
         }
@@ -109,5 +109,32 @@ extension MovieViewController: ViewDesignProtocol{
         navigationItem.title = "Movie"
         
         view.backgroundColor = .black
+        
+        movieTableView
+            .register(
+                MovieTableViewCell.self,
+                forCellReuseIdentifier: MovieTableViewCell.identifier
+            )
+        movieTableView.delegate = self
+        movieTableView.dataSource = self
+        movieTableView.separatorStyle = .none
+        movieTableView.backgroundColor = .black
+    }
+}
+
+extension MovieViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 10
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: MovieTableViewCell.identifier,
+            for: indexPath
+        ) as? MovieTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        return cell
     }
 }
