@@ -38,6 +38,11 @@ class MovieViewController: UIViewController {
         return button
     }()
     
+    private let movieTableVie: UITableView = {
+        let tableView = UITableView()
+        return tableView
+    }()
+    
     private let movieSearchView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -59,6 +64,8 @@ extension MovieViewController: ViewDesignProtocol{
         
         movieSearchView.addSubview(movieSearchTextField)
         movieSearchView.addSubview(movieSearchButton)
+        
+        view.addSubview(movieTableVie)
     }
 
     func configureLayout() {
@@ -91,6 +98,11 @@ extension MovieViewController: ViewDesignProtocol{
                 .defaultHigh,
                 for: .horizontal
             )
+        
+        movieTableVie.snp.makeConstraints { make in
+            make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(movieSearchView.snp.bottom).offset(8)
+        }
     }
     
     func configureView() {
