@@ -10,6 +10,8 @@ import SnapKit
 
 class MovieViewController: UIViewController {
 
+    private var randomMovieList: [Movie] = Array(MovieInfo.movies.shuffled().prefix(10))
+    
     private let movieSearchTextField: UITextField = {
         let textField = UITextField()
         textField.borderStyle = .none
@@ -124,7 +126,7 @@ extension MovieViewController: ViewDesignProtocol{
 
 extension MovieViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return randomMovieList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -135,6 +137,7 @@ extension MovieViewController: UITableViewDelegate, UITableViewDataSource{
             return UITableViewCell()
         }
         
+        cell.configureData(rank: indexPath.row + 1, movie: randomMovieList[indexPath.row])
         return cell
     }
 }
